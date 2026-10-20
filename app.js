@@ -1376,13 +1376,15 @@ if (!alreadyRecorded) {
     total: Number(reservation.price) * Number(reservation.quantity),
     completedAt: reservation.completedAt
   });
-  window.dispatchEvent(new Event("shoplocal:sale-recorded"))
-
-  if (!saveData(STORAGE_KEYS.salesHistory, history)) {
+ if (!saveData(STORAGE_KEYS.salesHistory, history)) {
     reservation.status = "Approved";
     delete reservation.completedAt;
     return;
   }
+
+  // Refresh the graph and sales history AFTER saving.
+  window.dispatchEvent(new Event("shoplocal:sale-recorded"));
+  window.dispatchEvent(new Event("shoplocal:sales-history-updated"));
 }
 
 if (saveReservations(reservations)) {
