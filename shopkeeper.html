@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>Shopkeeper Dashboard | ShopLocal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="index.html">ShopLocal<span>.</span></a>
+    <a class="primary-button" href="customer.html">Customer Dashboard →</a>
+  </header>
+
+  <main class="dashboard">
+    <section class="welcome-panel">
+      <p class="eyebrow">YOUR SHOP, ONLINE</p>
+      <h1>Manage your shop.</h1>
+      <p>Update your profile, manage products, and respond to customer reservation requests.</p>
+    </section>
+
+    <section class="search-panel shop-profile-editor">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow"></p>
+          <h2>Digital shop profile</h2>
+        </div>
+        <span class="sample-label">CUSTOMER-VISIBLE</span>
+      </div>
+      <p>These details appear when customers open a product from your shop.</p>
+      <div class="profile-switcher">
+        <label for="shopProfileSelect">Your shop profiles</label>
+        <select id="shopProfileSelect" aria-label="Choose shop profile" hidden><option value="">Choose a shop profile</option></select>
+        <button type="button" id="createNewShopProfileButton" class="secondary-button">+ Create First Profile</button>
+      </div>
+      <div id="shopProfileSummary" class="saved-shop-profile" hidden></div>
+      <form id="shopProfileForm" class="shop-profile-form">
+        <label for="shopProfileName">Shop name</label>
+        <input id="shopProfileName" name="shopProfileName" type="text" maxlength="60" required placeholder="e.g. City Stationery">
+
+        <label for="shopProfileCategory">Shop category</label>
+        <select id="shopProfileCategory" name="shopProfileCategory" required>
+          <option value="General Store">General Store</option>
+          <option value="Stationery">Stationery</option>
+          <option value="Footwear">Footwear</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Food and Grocery">Food and Grocery</option>
+          <option value="Household">Household</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="shopProfileAddress">Shop address / area</label>
+        <input id="shopProfileAddress" name="shopProfileAddress" type="text" maxlength="140" required placeholder="Street, area, city">
+
+        <label for="shopProfilePhone">Contact phone (optional)</label>
+        <input id="shopProfilePhone" name="shopProfilePhone" type="tel" maxlength="30" placeholder="Shop contact number">
+
+        <label for="shopProfileHours">Opening hours</label>
+        <input id="shopProfileHours" name="shopProfileHours" type="text" maxlength="100" required placeholder="e.g. Mon–Sat, 9 AM–8 PM">
+
+        <label for="shopProfileDescription">About your shop</label>
+        <textarea id="shopProfileDescription" name="shopProfileDescription" rows="3" maxlength="400" required placeholder="Describe your shop and what customers can find here."></textarea>
+
+        <button class="primary-button" type="submit">Create Shop Profile</button>
+      </form>
+      <p class="profile-note">Demo note: profile information is saved in this browser. It is not yet synced across devices.</p>
+    </section>
+
+    <section class="search-panel" id="subscriptionPanel">
+  <p class="eyebrow">SHOPLOCAL PLANS</p>
+  <h2>Your shop subscription</h2>
+  <p>Choose a demo plan to control which shopkeeper features are available.</p>
+
+  <div id="subscriptionStatus" aria-live="polite">
+    Create and save a shop profile to choose a plan.
+  </div>
+
+  <div class="card-actions">
+    <button type="button" class="secondary-button" data-demo-plan="free">
+      Free Plan
+    </button>
+    <button type="button" class="secondary-button" data-demo-plan="basic">
+      Activate Basic · ₹150/month
+    </button>
+    <button type="button" class="primary-button" data-demo-plan="pro">
+      Activate Pro · ₹450/month
+    </button>
+  </div>
+   
+  <div class="plan-details">
+  <div class="plan-detail plan-free">
+    <p class="plan-label">GET STARTED</p>
+    <h3>Free Plan</h3>
+    <p class="plan-price">₹0 <span>forever</span></p>
+    <p class="plan-description">
+      Build your shop's digital presence and help customers discover your store.
+    </p>
+    <ul>
+      <li>Digital shop profile</li>
+      <li>Display shop information and opening hours</li>
+      <li>Basic shop visibility on ShopLocal</li>
+      <li>Explore the platform with no subscription fee</li>
+    </ul>
+  </div>
+
+  <div class="plan-detail plan-basic">
+    <p class="plan-label">FOR EVERYDAY BUSINESS</p>
+    <h3>Basic Plan</h3>
+    <p class="plan-price">₹150 <span>/ month</span></p>
+    <p class="plan-description">
+      Manage your shop's products and customer reservations from one dashboard.
+    </p>
+    <ul>
+      <li>Everything included in Free</li>
+      <li>Add, edit, and delete products</li>
+      <li>Update product prices and stock quantities</li>
+      <li>Manage customer reservations</li>
+      <li>View your sales overview</li>
+    </ul>
+  </div>
+
+  <div class="plan-detail plan-pro">
+    <p class="plan-label">ADVANCED INVENTORY</p>
+    <h3>Pro Plan</h3>
+    <p class="plan-price">₹450 <span>/ month</span></p>
+    <p class="plan-description">
+      Save time on inventory entry with an AI-assisted workflow for product information.
+    </p>
+    <ul>
+      <li>Everything included in Basic</li>
+      <li>AI-assisted inventory entry from product photos</li>
+      <li>Use product quantities to help organize inventory</li>
+      <li>Designed for faster product entry and stock management</li>
+    </ul>
+  </div>
+</div>
+
+  <p class="profile-note">
+    Demo mode only: no payment is collected. Basic and Pro demo subscriptions
+    expire after 30 days.
+  </p>
+</section>
+
+<section class="pro-analytics-panel" id="proAnalyticsPanel" hidden>
+  <p class="eyebrow">SHOPLOCAL PRO</p>
+  <h2>Sales Analytics</h2>
+  <p class="analytics-description">
+    Understand your shop's sales performance with recorded reservation data.
+  </p>
+
+  <div class="analytics-summary">
+    <article class="analytics-card">
+      <span>Last Month's Sales</span>
+      <strong id="lastMonthSales">₹0</strong>
+      <p id="lastMonthOrders">0 completed orders</p>
+    </article>
+
+    <article class="analytics-card">
+      <span>Current Month's Sales</span>
+      <strong id="currentMonthSales">₹0</strong>
+      <p id="currentMonthOrders">0 completed orders</p>
+    </article>
+  </div>
+
+  <div class="analytics-chart-card">
+    <h3>Daily Sales — Last Month</h3>
+    <p id="salesChartMessage">Sales will appear here once recorded.</p>
+    <div class="sales-chart" id="salesChart"
+         role="img" aria-label="Daily sales chart for last month">
+    </div>
+  </div>
+  <div class="analytics-chart-card">
+    <h3>Profit &amp; Loss Overview</h3>
+    <p class="analytics-description">
+      Based on completed reservations and saved product cost prices.
+    </p>
+
+    <div class="analytics-summary">
+      <article class="analytics-card">
+        <span>Revenue</span>
+        <strong id="profitRevenue">₹0</strong>
+      </article>
+
+      <article class="analytics-card">
+        <span>Cost of Goods Sold</span>
+        <strong id="profitCosts">₹0</strong>
+      </article>
+
+      <article class="analytics-card">
+        <span>Gross Profit</span>
+        <strong id="grossProfit">₹0</strong>
+      </article>
+    </div>
+
+    <p id="profitMessage">
+      Profit figures will appear when reservations are completed.
+    </p>
+  </div>
+</section>
+
+<section class="search-panel" id="marketPricePanel" hidden>
+  <p class="eyebrow">SHOPLOCAL PRO</p>
+  <h2>Market Price Intelligence</h2>
+  <p>
+    Compare your selling prices with sample market prices
+    and get a recommended selling price for each eligible demo product.
+  </p>
+
+  <div id="marketPriceSummary" class="stats-grid dashboard-grid"></div>
+
+  <div id="marketPriceResults" class="product-grid">
+    <p>Market price insights will appear here.</p>
+  </div>
+
+  <p class="profile-note">
+    Demo estimates only. These are not live market prices.
+  </p>
+</section>
+    <section class="stats-grid dashboard-grid" aria-label="Shop summary">
+      <article class="stat-card"><p>Total products</p><strong id="totalProducts">0</strong></article>
+      <article class="stat-card"><p>Low-stock products</p><strong id="lowStockProducts">0</strong></article>
+      <article class="stat-card"><p>Pending reservations</p><strong id="pendingReservations">0</strong></article>
+    </section>
+
+    <!-- BASIC + PRO SALES OVERVIEW -->
+    <section class="search-panel" id="salesOverview">
+      <p class="eyebrow">SALES PERFORMANCE</p>
+      <h2>Sales Overview</h2>
+      <p>Only reservations marked Completed count as sales.</p>
+
+      <div class="stats-grid dashboard-grid">
+        <article class="stat-card">
+          <p>Completed Sales</p>
+          <strong id="completedSalesCount">0</strong>
+        </article>
+
+        <article class="stat-card">
+          <p>Total Revenue</p>
+          <strong id="completedSalesRevenue">₹0</strong>
+        </article>
+
+        <article class="stat-card">
+          <p>Units Sold</p>
+          <strong id="completedSalesUnits">0</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="search-panel" id="salesHistoryPanel">
+  <p class="eyebrow">TRANSACTION RECORDS</p>
+  <h2>Sales History</h2>
+  <p>Review reservations that have been marked as sold.</p>
+
+  <div class="form-group">
+    <label for="salesHistorySearch">Search transactions</label>
+    <input
+      type="search"
+      id="salesHistorySearch"
+      placeholder="Search by product name..."
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="salesHistoryDate">Filter by date</label>
+    <input type="date" id="salesHistoryDate">
+  </div>
+
+
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="salesHistoryList">
+        <tr>
+          <td colspan="5">No sales recorded yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+    
+    <section class="search-panel">
+  <p class="eyebrow">INVENTORY</p>
+  <h2>Add or edit a product</h2>  
+
+  <form id="productForm">
+    <input id="editingProductId" type="hidden">
+
+    <label for="productName">Product name</label>
+    <input
+      id="productName"
+      type="text"
+      required
+      maxlength="100"
+      placeholder="e.g. Blue Ball Pen"
+    >
+
+    <label for="productCategory">Category</label>
+    <select id="productCategory" required>
+      <option value="">Choose category</option>
+      <option value="Stationery">Stationery</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Food">Food</option>
+      <option value="Household">Household</option>
+    </select>
+
+    <label for="productPrice">Selling Price (₹)</label>
+    <input
+      id="productPrice"
+      type="number"
+      min="0.01"
+      step="0.01"
+      required
+      placeholder="Selling price"
+    >
+
+    <label for="productCostPrice">Cost Price (₹)</label>
+    <input
+      id="productCostPrice"
+      type="number"
+      min="0"
+      step="0.01"
+      required
+      placeholder="What the shop pays"
+    >
+
+    <label for="productStock">Stock quantity</label>
+    <input
+      id="productStock"
+      type="number"
+      min="0"
+      step="1"
+      required
+      placeholder="Available quantity"
+    >
+
+    <button class="primary-button" type="submit">
+      Add Product
+    </button>
+  </form>
+</section>
+
+    <section class="products-section">
+      <div class="section-heading"><div><p class="eyebrow">YOUR LISTINGS</p><h2>Product inventory</h2></div></div>
+      <div id="inventoryList" class="product-grid"></div>
+    </section>
+
+    <section class="reservations-section">
+      <p class="eyebrow">CUSTOMER ACTIVITY</p>
+      <h2>Reservation requests</h2>
+      <p>Approve requests only when the requested quantity is available.</p>
+      <div id="shopkeeperReservationList"></div>
+    </section>
+
+    <section class="home-cta">
+      <h2>Make your shop easier to discover.</h2>
+      <p>Your digital profile helps customers learn about your local business.</p>
+      <a class="primary-button" href="customer.html">View Customer Dashboard</a>
+    </section>
+  </main>
+
+  <footer class="home-footer"><div class="footer-inner"><p>ShopLocal © 2026 · Supporting neighbourhood businesses</p></div></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
