@@ -164,13 +164,14 @@
     </article>
   </div>
 
-  <div class="analytics-chart-card">
+  <div class="analytics-chart-card" hidden>
     <h3>Daily Sales — Last Month</h3>
     <p id="salesChartMessage">Sales will appear here once recorded.</p>
     <div class="sales-chart" id="salesChart"
-         role="img" aria-label="Daily sales chart for last month">
+         role="img" aria-label="Daily sales chart for last month" hidden>
     </div>
   </div>
+
   <div class="analytics-chart-card">
     <h3>Profit &amp; Loss Overview</h3>
     <p class="analytics-description">
@@ -197,6 +198,24 @@
     <p id="profitMessage">
       Profit figures will appear when reservations are completed.
     </p>
+  </div>
+</section>
+
+<section class="search-panel" id="salesGraphPanel">
+  <p class="eyebrow">SHOP ANALYTICS</p>
+  <h2>Sales Performance</h2>
+  <p>Revenue from your completed sales</p>
+
+  <div id="salesGraphSummary" class="stats-grid dashboard-grid"></div>
+
+  <div class="sales-chart-wrap">
+    <svg
+      id="salesGraph"
+      viewBox="0 0 700 300"
+      role="img"
+      aria-label="Daily sales revenue graph"
+      preserveAspectRatio="xMidYMid meet">
+    </svg>
   </div>
 </section>
 
