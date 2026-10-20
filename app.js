@@ -1376,6 +1376,7 @@ if (!alreadyRecorded) {
     total: Number(reservation.price) * Number(reservation.quantity),
     completedAt: reservation.completedAt
   });
+  window.dispatchEvent(new Event("shoplocal:sale-recorded"))
 
   if (!saveData(STORAGE_KEYS.salesHistory, history)) {
     reservation.status = "Approved";
@@ -2142,4 +2143,195 @@ if (saveReservations(reservations)) {
   window.addEventListener("shoplocal:sales-history-updated", render);
 
   render();
+})();
+
+(function initSalesGraph() {
+  const svg = document.getElementById("salesGraph");
+  const summary = document.getElementById("salesGraphSummary");
+
+  if (!svg || !summary) return;
+
+  const NS = "http://www.w3.org/2000/svg";
+
+  function el(tag, attrs = {}, text = "") {
+    const node = document.createElementNS(NS, tag);
+
+    Object.entries(attrs).forEach(([key, value]) => {
+      node.setAttribute(key, value);
+    });
+
+    if (text !== "") node.textContent = text;
+    return node;
+  }
+
+  function render() {
+    const activeId = readData(STORAGE_KEYS.activeProfile, "");
+    const profile = getShopProfile(activeId);
+    const shopName = String(profile?.name || "").trim().toLowerCase();
+
+    const stored = readData(STORAGE_KEYS.salesHistory, []);
+    const sales = (Array.isArray(stored) ? stored : []).filter(sale =>
+      String(sale.shop || "").trim().toLowerCase() === shopName
+    );
+
+    // Show the most recent seven calendar days.
+    const days = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() - i);
+
+      const key = [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+
+      days.push({
+        key,
+        label: date.toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short"
+        }),
+        revenue: 0,
+        count: 0
+      });
+    }
+
+    const byDate = new Map(days.map(day => [day.key, day]));
+
+    sales.forEach(sale => {
+      const date = new Date(sale.completedAt);
+      if (Number.isNaN(date.getTime())) return;
+
+      const key = [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+
+      const day = byDate.get(key);
+      if (!day) return;
+
+      // Adjust these field names if your sale records use different ones.
+      const amount = Number(
+        sale.totalAmount ?? sale.total ?? sale.amount ?? 0
+      );
+
+      day.revenue += Number.isFinite(amount) ? amount : 0;
+      day.count += 1;
+    });
+
+    const totalRevenue = sales.reduce((sum, sale) => {
+      const amount = Number(
+        sale.totalAmount ?? sale.total ?? sale.amount ?? 0
+      );
+      return sum + (Number.isFinite(amount) ? amount : 0);
+    }, 0);
+
+    summary.replaceChildren();
+
+    [
+      ["Total revenue", "₹" + totalRevenue.toFixed(2)],
+      ["Completed sales", String(sales.length)],
+      ["Last 7 days", "₹" + days.reduce((sum, day) =>
+        sum + day.revenue, 0
+      ).toFixed(2)]
+    ].forEach(([label, value]) => {
+      const card = document.createElement("article");
+      card.className = "stat-card";
+
+      const p = document.createElement("p");
+      p.textContent = label;
+
+      const strong = document.createElement("strong");
+      strong.textContent = value;
+
+      card.append(p, strong);
+      summary.appendChild(card);
+    });
+
+    svg.replaceChildren();
+
+    const W = 700;
+    const H = 300;
+    const left = 55;
+    const right = 15;
+    const top = 20;
+    const bottom = 45;
+    const chartW = W - left - right;
+    const chartH = H - top - bottom;
+    const maxValue = Math.max(
+      1,
+      ...days.map(day => day.revenue)
+    ) * 1.15;
+
+    // Horizontal grid and revenue labels.
+    for (let i = 0; i <= 4; i++) {
+      const y = top + chartH * i / 4;
+      const value = maxValue * (4 - i) / 4;
+
+      svg.appendChild(el("line", {
+        x1: left, y1: y, x2: W - right, y2: y,
+        class: "chart-grid"
+      }));
+
+      svg.appendChild(el("text", {
+        x: left - 8, y: y + 4,
+        "text-anchor": "end",
+        class: "chart-label"
+      }, "₹" + value.toFixed(0)));
+    }
+
+    const slot = chartW / days.length;
+    const barW = slot * 0.52;
+
+    days.forEach((day, i) => {
+      const height = day.revenue / maxValue * chartH;
+      const x = left + i * slot + (slot - barW) / 2;
+      const y = top + chartH - height;
+
+      const bar = el("rect", {
+        x, y, width: barW,
+        height: Math.max(0, height),
+        rx: 5,
+        class: "chart-bar"
+      });
+
+      bar.appendChild(el("title", {},
+        `${day.label}: ₹${day.revenue.toFixed(2)} (${day.count} sales)`
+      ));
+
+      svg.appendChild(bar);
+
+      svg.appendChild(el("text", {
+        x: left + i * slot + slot / 2,
+        y: H - 15,
+        "text-anchor": "middle",
+        class: "chart-label"
+      }, day.label));
+    });
+
+    if (sales.length === 0) {
+      svg.appendChild(el("text", {
+        x: W / 2,
+        y: H / 2,
+        "text-anchor": "middle",
+        class: "chart-label"
+      }, "No completed sales yet"));
+    }
+  }
+
+  window.addEventListener("storage", render);
+  window.addEventListener("shoplocal:sale-recorded", render);
+  window.addEventListener("shoplocal:profile-saved", render);
+
+  // Refresh after sales are added on this page.
+  window.addEventListener("focus", render);
+
+  render();
+
+  // Make refreshing available to the existing sale-recording code.
+  window.refreshShopLocalSalesGraph = render;
 })();
